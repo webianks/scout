@@ -22,7 +22,6 @@ public class Scout {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
        
-        
         FileReader fileReader = new FileReader("C:\\Users\\R Ankit\\Desktop\\Appathon\\Input.txt");
         BufferedReader br = new BufferedReader(fileReader);
         
@@ -30,11 +29,24 @@ public class Scout {
         int numberOfLines = 0;
         
           while((singleLine = br.readLine()) != null){
-            numberOfLines++;
+            
+              numberOfLines++;
+              Scout scout = new Scout();
+              scout.tokenizeTheLine(singleLine);
+              System.out.println();
+            
           }
            br.close();
-       
-           System.out.println("Number of lines "+numberOfLines);
+           //System.out.println("Number of lines "+numberOfLines);
+           
     }
-    
+
+    private void tokenizeTheLine(String singleLine) {
+        for(String s : singleLine.split(" "))
+           processWord(s);
+    }
+
+    private void processWord(String s) {
+        System.out.println(s);
+    }
 }
