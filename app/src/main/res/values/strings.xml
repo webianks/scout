@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Scout</string>
+    <string name="scout_demo">Scout helps to perform email search flawlessly on the basis of extracting various email
+    search parameters from plain english query.</string>
+    <string name="select">Please input the .txt file from your storage drive.</string>
+    <string name="select_now">SELECT INPUT FILE</string>
 </resources>
