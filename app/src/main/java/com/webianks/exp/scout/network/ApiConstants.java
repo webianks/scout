@@ -1,4 +1,4 @@
-package com.webianks.exp.scout;
+package com.webianks.exp.scout.network;
 
 /**
  * Created by R Ankit on 20-02-2017.

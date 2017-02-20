@@ -1,4 +1,4 @@
-package com.webianks.exp.scout;
+package com.webianks.exp.scout.network;
 
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;

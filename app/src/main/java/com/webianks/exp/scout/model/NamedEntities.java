@@ -1,4 +1,4 @@
-package com.webianks.exp.scout;
+package com.webianks.exp.scout.model;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import java.util.List;
  * Created by R Ankit on 20-02-2017.
  */
 
-class NamedEntities {
+public class NamedEntities {
 
 
     /**
