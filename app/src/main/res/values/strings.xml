@@ -8,4 +8,5 @@
     <string name="no_file">No file selected.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="please_wait">Please wait..</string>
 </resources>

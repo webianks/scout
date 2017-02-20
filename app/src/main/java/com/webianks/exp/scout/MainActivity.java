@@ -1,5 +1,6 @@
 package com.webianks.exp.scout;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
     private TextView selectedFile;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void readFile(String filePath) throws IOException {
 
+        showProgressDialog();
+
         FileReader fileReader = new FileReader(filePath);
         BufferedReader br = new BufferedReader(fileReader);
 
@@ -164,4 +168,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+    private void showProgressDialog(){
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+    }
+
+    private void dismissDialog(){
+
+        if (progressDialog!=null)
+            progressDialog.dismiss();
+
+    }
+
 }
