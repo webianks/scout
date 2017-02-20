@@ -6,4 +6,6 @@
     <string name="select_now">Select Now</string>
     <string name="please_select">Please select only .txt files.</string>
     <string name="no_file">No file selected.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

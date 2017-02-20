@@ -1,6 +1,8 @@
 package com.webianks.exp.scout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,8 +16,6 @@ import com.webianks.exp.scout.model.NamedEntities;
 import com.webianks.exp.scout.model.TypedRelations;
 import com.webianks.exp.scout.network.ApiServices;
 import com.webianks.exp.scout.network.RestClient;
-
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -110,16 +110,36 @@ public class MainActivity extends AppCompatActivity {
             String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
             selectedFile.setText("Selected file: "+fileName);
 
-            if (format.equals("txt")) {
-                try {
-                    readFile(filePath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else
-                Toast.makeText(this, getString(R.string.please_select), Toast.LENGTH_LONG).show();
+            if (format.equals("txt"))
+                askToExtractParameters(filePath);
+             else
+                 Toast.makeText(this, getString(R.string.please_select), Toast.LENGTH_LONG).show();
 
         }
+    }
+
+
+    private void askToExtractParameters(final String filePath) {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Extraction")
+                .setMessage("Are you sure you want to use this file to extract keywords?")
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        try {
+                            readFile(filePath);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void readFile(String filePath) throws IOException {
