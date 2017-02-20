@@ -2,12 +2,15 @@ package com.webianks.exp.scout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements Callback<NamedEntities> {
+
+    private String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +29,13 @@ public class MainActivity extends AppCompatActivity implements Callback<NamedEnt
 
     @Override
     public void onResponse(Call<NamedEntities> call, Response<NamedEntities> response) {
+
         if (response.isSuccessful()) {
 
             NamedEntities namedEntities = response.body();
-            Toast.makeText(MainActivity.this,response.body().toString(),Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this,"Got the entities",Toast.LENGTH_LONG).show();
+
+            Log.d(TAG,namedEntities.getEntities().get(0).getText());
 
         }
     }

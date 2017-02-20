@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 
 interface ApiServices {
 
-    @GET("/TextGetRankedNamedEntities?apikey="+BuildConfig.API_KEY+"&model="+BuildConfig.MODEL)
-    Call<NamedEntities> getNamedEntities(@Query("text") String text, @Query("output_mode") String output_mode);
+    @GET("/calls/text/TextGetRankedNamedEntities?apikey="+BuildConfig.API_KEY+"&model="+BuildConfig.MODEL)
+    Call<NamedEntities> getNamedEntities(@Query("text") String text, @Query("outputMode") String outputMode);
 
 }
