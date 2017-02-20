@@ -100,8 +100,33 @@ public class MainActivity extends AppCompatActivity {
 
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
 
+            try {
+                readFile(filePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
+    private void readFile(String filePath) throws IOException {
 
+        FileReader fileReader = new FileReader(filePath);
+        BufferedReader br = new BufferedReader(fileReader);
+
+        String singleLine;
+        int numberOfLines = 0;
+
+        try {
+            while((singleLine = br.readLine()) != null){
+                numberOfLines++;
+                Log.d(TAG,singleLine);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            br.close();
+        }
+
+    }
 }
