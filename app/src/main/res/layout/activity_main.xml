@@ -31,6 +31,8 @@
         android:layout_marginRight="28dp"
         android:text="@string/select_now"
         android:textStyle="bold"
+        android:onClick="showFileChooser"
+        android:textAllCaps="false"
         android:theme="@style/ButtonTheme" />
 
 
