@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void testCalls(String input) {
 
-
-        Log.d(TAG,"QUERY: "+input);
+        //Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
 
@@ -63,11 +62,13 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<NamedEntities> call, Response<NamedEntities> response) {
 
                 if (response.isSuccessful()) {
+
                     NamedEntities namedEntities = response.body();
 
                     if (namedEntities.getEntities().size() > 0){
-                        //Toast.makeText(MainActivity.this, "Got the entities", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, namedEntities.getEntities().get(0).getText());
+
+                        for (NamedEntities.EntitiesBean entitiesBean : namedEntities.getEntities())
+                            Log.d(TAG, entitiesBean.getText());
                     }
                     dismissDialogNow(++count);
                 }
