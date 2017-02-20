@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nbsp.materialfilepicker.MaterialFilePicker;
@@ -13,6 +14,8 @@ import com.webianks.exp.scout.model.NamedEntities;
 import com.webianks.exp.scout.model.TypedRelations;
 import com.webianks.exp.scout.network.ApiServices;
 import com.webianks.exp.scout.network.RestClient;
+
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -26,15 +29,19 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
+    private TextView selectedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        selectedFile = (TextView) findViewById(R.id.selectedFile);
+
         //testCalls();
 
     }
+
 
     private void testCalls() {
 
@@ -99,12 +106,18 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1 && resultCode == RESULT_OK) {
 
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+            String format = filePath.substring(filePath.lastIndexOf(".") + 1);
+            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+            selectedFile.setText("Selected file: "+fileName);
 
-            try {
-                readFile(filePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (format.equals("txt")) {
+                try {
+                    readFile(filePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else
+                Toast.makeText(this, getString(R.string.please_select), Toast.LENGTH_LONG).show();
 
         }
     }
@@ -118,13 +131,15 @@ public class MainActivity extends AppCompatActivity {
         int numberOfLines = 0;
 
         try {
-            while((singleLine = br.readLine()) != null){
+            while ((singleLine = br.readLine()) != null) {
+
                 numberOfLines++;
-                Log.d(TAG,singleLine);
+                //Log.d(TAG,singleLine);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             br.close();
         }
 

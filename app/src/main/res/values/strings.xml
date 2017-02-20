@@ -4,4 +4,6 @@
     search parameters from plain english query.</string>
     <string name="select">Please input the .txt file from your storage drive.</string>
     <string name="select_now">Select Now</string>
+    <string name="please_select">Please select only .txt files.</string>
+    <string name="no_file">No file selected.</string>
 </resources>
