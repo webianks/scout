@@ -2,16 +2,40 @@ package com.webianks.exp.scout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import com.ibm.watson.developer_cloud.alchemy.v1.AlchemyLanguage;
+import android.widget.Toast;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Callback<NamedEntities> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AlchemyLanguage service = new AlchemyLanguage();
-        service.setApiKey(BuildConfig.API_KEY);
+
+        ApiServices apiService = new RestClient().getApiService();
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("Mail from Ravi to me","json");
+
+        //asynchronous call
+        namedEntitiesCall.enqueue(this);
+    }
+
+
+
+    @Override
+    public void onResponse(Call<NamedEntities> call, Response<NamedEntities> response) {
+        if (response.isSuccessful()) {
+
+            NamedEntities namedEntities = response.body();
+            Toast.makeText(MainActivity.this,response.body().toString(),Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+    @Override
+    public void onFailure(Call<NamedEntities> call, Throwable t) {
+
     }
 }

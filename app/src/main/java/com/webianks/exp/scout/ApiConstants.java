@@ -5,5 +5,7 @@ package com.webianks.exp.scout;
  */
 
 public class ApiConstants {
-    public static String API_BASEURL = "https://gateway-a.watsonplatform.net/calls/text/";
+
+    public static String API_BASEURL = "https://gateway-a.watsonplatform.net/calls/text";
+
 }
