@@ -1,6 +1,7 @@
 package com.webianks.exp.scout;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = MainActivity.class.getSimpleName();
     private TextView selectedFile;
     private ProgressDialog progressDialog;
+    private int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +47,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void testCalls() {
+    private void testCalls(String input) {
+
+
+        Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
 
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("PDFs from Ravi in the last 3 days", "json");
-        Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations("PDFs from Ravi in the last 3 days", "json");
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities(input, "json");
+        Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations(input, "json");
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -59,13 +64,18 @@ public class MainActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     NamedEntities namedEntities = response.body();
-                    Toast.makeText(MainActivity.this, "Got the entities", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, namedEntities.getEntities().get(0).getText());
+
+                    if (namedEntities.getEntities().size() > 0){
+                        //Toast.makeText(MainActivity.this, "Got the entities", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, namedEntities.getEntities().get(0).getText());
+                    }
+                    dismissDialogNow(++count);
                 }
             }
 
             @Override
             public void onFailure(Call<NamedEntities> call, Throwable t) {
+                dismissDialogNow(++count);
             }
         });
 
@@ -76,15 +86,21 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     TypedRelations typedRelations = response.body();
-                    Toast.makeText(MainActivity.this, "Got the relations", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, typedRelations.getTypedRelations().get(0).getType());
+
+                    if (typedRelations.getTypedRelations().size() > 0){
+
+                        //Toast.makeText(MainActivity.this, "Got the relations", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, typedRelations.getTypedRelations().get(0).getType());
+
+                    }
+                    dismissDialogNow(++count);
 
                 }
             }
 
             @Override
             public void onFailure(Call<TypedRelations> call, Throwable t) {
-
+                dismissDialogNow(++count);
             }
         });
     }
@@ -154,7 +170,10 @@ public class MainActivity extends AppCompatActivity {
         String singleLine;
         int numberOfLines = 0;
 
-        try {
+        if (br.readLine() != null)
+           testCalls(br.readLine());
+
+       /* try {
             while ((singleLine = br.readLine()) != null) {
 
                 numberOfLines++;
@@ -165,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } finally {
             br.close();
-        }
+        }*/
 
     }
 
@@ -175,15 +194,16 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.please_wait));
         progressDialog.setIndeterminate(true);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(false);
         progressDialog.show();
 
     }
 
-    private void dismissDialog(){
+    private void dismissDialogNow(int count){
 
-        if (progressDialog!=null)
+
+        if (progressDialog != null && count == 2)
             progressDialog.dismiss();
 
     }
