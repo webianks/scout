@@ -13,6 +13,10 @@ import android.widget.Toast;
 
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.webianks.exp.scout.model.NamedEntities;
 import com.webianks.exp.scout.model.TypedRelations;
 import com.webianks.exp.scout.network.ApiServices;
@@ -21,6 +25,7 @@ import com.webianks.exp.scout.network.RestClient;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
@@ -157,13 +162,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getModelIdFromServer(String filePath) {
+    private void getModelIdFromServer(final String filePath) {
 
-        try {
-            readFile(filePath,"");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Model");
+        parseQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+
+                if (e == null){
+
+                    if (objects != null && objects.size()>0){
+
+                        String model = objects.get(0).getString("model_id");
+
+                        try {
+                            readFile(filePath,model);
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
+                    }else{
+                        Toast.makeText(MainActivity.this,"Can't get model",Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(MainActivity.this,"Can't get model",Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+
+
 
     }
 
