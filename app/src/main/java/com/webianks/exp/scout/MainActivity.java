@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        testCalls(" ","");
+        testCalls(" ", "");
 
     }
 
@@ -73,24 +73,45 @@ public class MainActivity extends AppCompatActivity {
 
                     if (namedEntities.getEntities() != null && namedEntities.getEntities().size() > 0) {
 
-                        for (NamedEntities.EntitiesBean entitiesBean : namedEntities.getEntities()){
+                        for (int i = 0; i < namedEntities.getEntities().size(); i++) {
 
+                            NamedEntities.EntitiesBean entitiesBean = namedEntities.getEntities().get(i);
+                            //Log.d(TAG, "onResponse: "+entitiesBean.getType());
 
-                            if (entitiesBean.getType().equals("ATTACHMENT_TYPE"))
+                            if (entitiesBean.getType().equals("ATTACHMENT_TYPE")) {
                                 outputModel.setAttachmentType(entitiesBean.getText());
+                                outputModel.setHasAttachments("YES");
+                            }
+
+                            if (entitiesBean.getType().equals("FROM")) {
+
+                                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                                if (nextEntity.getType().equals("USERNAME")) {
+                                    outputModel.setFrom(nextEntity.getText());
+                                }
+                            }
+
+                            if (entitiesBean.getType().equals("SPAN")) {
+                                outputModel.setToDate("TODAY"); //here only for last
+                            }
+
+                            if (entitiesBean.getType().equals("DATE")) {
+                                String[] splittedDate = entitiesBean.getText().split(" ");
+                                outputModel.setFromDate(outputModel.getToDate() + "-" + splittedDate[0]); //TODO index out of bound in case of month
+                            }
 
                         }
 
-                        Log.d(TAG, "FROM "+outputModel.getFrom());
-                        Log.d(TAG, "To "+outputModel.getTo());
-                        Log.d(TAG, "ToDate "+outputModel.getToDate());
-                        Log.d(TAG, "FromDate "+outputModel.getFrom());
-                        Log.d(TAG, "HasAttachments "+outputModel.hasAttachments());
-                        Log.d(TAG, "AttachmentType "+outputModel.getAttachmentType());
-                        Log.d(TAG, "AttachmentSize "+outputModel.getAttachmentSize());
-                        Log.d(TAG, "AttachmentName "+outputModel.getAttachmentName());
-                        Log.d(TAG, "Subject "+outputModel.getSubject());
-                        Log.d(TAG, "CC "+outputModel.getCC());
+                        Log.d(TAG, "FROM " + outputModel.getFrom());
+                        Log.d(TAG, "To " + outputModel.getTo());
+                        Log.d(TAG, "ToDate " + outputModel.getToDate());
+                        Log.d(TAG, "FromDate " + outputModel.getFromDate());
+                        Log.d(TAG, "HasAttachments " + outputModel.hasAttachments());
+                        Log.d(TAG, "AttachmentType " + outputModel.getAttachmentType());
+                        Log.d(TAG, "AttachmentSize " + outputModel.getAttachmentSize());
+                        Log.d(TAG, "AttachmentName " + outputModel.getAttachmentName());
+                        Log.d(TAG, "Subject " + outputModel.getSubject());
+                        Log.d(TAG, "CC " + outputModel.getCC());
 
                     }
                     dismissDialogNow(++count);
@@ -103,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+/*
         typedRelationsCall.enqueue(new Callback<TypedRelations>() {
             @Override
             public void onResponse(Call<TypedRelations> call, Response<TypedRelations> response) {
@@ -126,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<TypedRelations> call, Throwable t) {
                 dismissDialogNow(++count);
             }
-        });
+        });*/
+
     }
 
     public void showFileChooser(View view) {
@@ -191,22 +214,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
 
-                if (e == null){
+                if (e == null) {
 
-                    if (objects != null && objects.size()>0){
+                    if (objects != null && objects.size() > 0) {
 
                         String model = objects.get(0).getString("model_id");
 
                         try {
-                            readFile(filePath,model);
+                            readFile(filePath, model);
                         } catch (IOException ioe) {
                             ioe.printStackTrace();
                         }
-                    }else{
-                        Toast.makeText(MainActivity.this,"Can't get model",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Can't get model", Toast.LENGTH_LONG).show();
                     }
-                }else{
-                    Toast.makeText(MainActivity.this,"Can't get model",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Can't get model", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -215,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void readFile(String filePath,String model) throws IOException {
+    private void readFile(String filePath, String model) throws IOException {
 
         FileReader fileReader = new FileReader(filePath);
         BufferedReader br = new BufferedReader(fileReader);
@@ -224,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         int numberOfLines = 0;
 
         if (br.readLine() != null)
-            testCalls(br.readLine(),model);
+            testCalls(br.readLine(), model);
 
        /* try {
             while ((singleLine = br.readLine()) != null) {
