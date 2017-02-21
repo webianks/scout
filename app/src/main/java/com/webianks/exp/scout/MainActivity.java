@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         ApiServices apiService = new RestClient().getApiService();
 
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("all attachments larger than 3MB", "json", model);
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("ppts/presentations from ravi to me and rohan", "json", model);
         Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations("PDFs from Ravi in the last 3 days", "json", model);
 
         //asynchronous call
@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
                                 outputModel.setAttachmentSize(entitiesBean.getText());
 
                             }
+
+                            if (entitiesBean.getType().equals("ATTACHMENT_NAME"))
+                                outputModel.setAttachmentName(entitiesBean.getText());
 
                             if (entitiesBean.getType().equals("FROM")) {
 
@@ -168,10 +171,21 @@ public class MainActivity extends AppCompatActivity {
 
 
                             if (entitiesBean.getType().equals("TO")) {
+
                                 NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
                                 if (nextEntity.getType().equals("USERNAME")) {
                                     outputModel.setTo(nextEntity.getText());
                                 }
+
+                                if(i+2<namedEntities.getEntities().size()){
+
+                                    NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
+                                    if (nextEntity.getType().equals("USERNAME")) {
+                                        outputModel.setTo(outputModel.getTo()+" and "+lastEntity.getText());
+                                    }
+
+                                }
+
                             }
 
                         }
