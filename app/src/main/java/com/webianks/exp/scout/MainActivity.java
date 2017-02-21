@@ -1,7 +1,6 @@
 package com.webianks.exp.scout;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -47,14 +46,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void testCalls(String input) {
+    private void testCalls(String input, String model) {
 
         //Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
 
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities(input, "json");
-        Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations(input, "json");
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("PDFs from Ravi in the last 3 days", "json", model);
+        Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations("PDFs from Ravi in the last 3 days", "json", model);
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
                     NamedEntities namedEntities = response.body();
 
-                    if (namedEntities.getEntities().size() > 0){
+                    if (namedEntities.getEntities() != null && namedEntities.getEntities().size() > 0) {
 
                         for (NamedEntities.EntitiesBean entitiesBean : namedEntities.getEntities())
                             Log.d(TAG, entitiesBean.getText());
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
                     TypedRelations typedRelations = response.body();
 
-                    if (typedRelations.getTypedRelations().size() > 0){
+                    if (typedRelations.getTypedRelations() != null && typedRelations.getTypedRelations().size() > 0) {
 
                         //Toast.makeText(MainActivity.this, "Got the relations", Toast.LENGTH_LONG).show();
                         Log.d(TAG, typedRelations.getTypedRelations().get(0).getType());
@@ -127,12 +126,12 @@ public class MainActivity extends AppCompatActivity {
             String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
             String format = filePath.substring(filePath.lastIndexOf(".") + 1);
             String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-            selectedFile.setText("Selected file: "+fileName);
+            selectedFile.setText("Selected file: " + fileName);
 
             if (format.equals("txt"))
                 askToExtractParameters(filePath);
-             else
-                 Toast.makeText(this, getString(R.string.please_select), Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(this, getString(R.string.please_select), Toast.LENGTH_LONG).show();
 
         }
     }
@@ -146,11 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        try {
-                            readFile(filePath);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        getModelIdFromServer(filePath);
                     }
                 })
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -161,7 +156,18 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void readFile(String filePath) throws IOException {
+
+    private void getModelIdFromServer(String filePath) {
+
+        try {
+            readFile(filePath,"");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void readFile(String filePath,String model) throws IOException {
 
         showProgressDialog();
 
@@ -172,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         int numberOfLines = 0;
 
         if (br.readLine() != null)
-           testCalls(br.readLine());
+            testCalls(br.readLine(),model);
 
        /* try {
             while ((singleLine = br.readLine()) != null) {
@@ -190,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void showProgressDialog(){
+    private void showProgressDialog() {
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.please_wait));
@@ -201,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void dismissDialogNow(int count){
+    private void dismissDialogNow(int count) {
 
 
         if (progressDialog != null && count == 2)

@@ -14,10 +14,10 @@ import retrofit2.http.Query;
 
 public interface ApiServices {
 
-    @GET("/calls/text/TextGetRankedNamedEntities?apikey="+ BuildConfig.API_KEY+"&model="+BuildConfig.MODEL)
-    Call<NamedEntities> getNamedEntities(@Query("text") String text, @Query("outputMode") String outputMode);
+    @GET("/calls/text/TextGetRankedNamedEntities?apikey="+ BuildConfig.API_KEY)
+    Call<NamedEntities> getNamedEntities(@Query("text") String text, @Query("outputMode") String outputMode,@Query("model") String model);
 
-    @GET("/calls/text/TextGetTypedRelations?apikey="+ BuildConfig.API_KEY+"&model="+BuildConfig.MODEL)
-    Call<TypedRelations> getTypedRelations(@Query("text") String text, @Query("outputMode") String outputMode);
+    @GET("/calls/text/TextGetTypedRelations?apikey="+ BuildConfig.API_KEY)
+    Call<TypedRelations> getTypedRelations(@Query("text") String text, @Query("outputMode") String outputMode,@Query("model") String model);
 
 }

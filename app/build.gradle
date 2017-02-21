@@ -12,7 +12,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_KEY", API_KEY)
-        buildConfigField("String", "MODEL", MODEL)
     }
     buildTypes {
         release {
@@ -28,5 +27,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.nbsp:library:1.2'
+    compile 'com.parse:parse-android:1.13.1'
 
 }
