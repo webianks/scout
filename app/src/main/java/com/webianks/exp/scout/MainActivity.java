@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         ApiServices apiService = new RestClient().getApiService();
 
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("PDFs from Ravi in the last 3 days", "json", model);
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("Mails from Ravi CC Ankur", "json", model);
         Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations("PDFs from Ravi in the last 3 days", "json", model);
 
         //asynchronous call
@@ -79,7 +79,10 @@ public class MainActivity extends AppCompatActivity {
                             //Log.d(TAG, "onResponse: "+entitiesBean.getType());
 
                             if (entitiesBean.getType().equals("ATTACHMENT_TYPE")) {
-                                outputModel.setAttachmentType(entitiesBean.getText());
+
+                                if (!entitiesBean.getText().equalsIgnoreCase("Attachments"))
+                                   outputModel.setAttachmentType(entitiesBean.getText());
+
                                 outputModel.setHasAttachments("YES");
                             }
 
@@ -96,8 +99,23 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             if (entitiesBean.getType().equals("DATE")) {
+
                                 String[] splittedDate = entitiesBean.getText().split(" ");
-                                outputModel.setFromDate(outputModel.getToDate() + "-" + splittedDate[0]); //TODO index out of bound in case of month
+                                int date = Integer.valueOf(splittedDate[0]);
+
+                                if(entitiesBean.getText().contains("month"))
+                                    date = date*30;
+
+                                outputModel.setFromDate(outputModel.getToDate() + "-" + date); //TODO index out of bound in case of month
+
+                            }
+
+                            if (entitiesBean.getType().equals("CC")){
+
+                                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                                if (nextEntity.getType().equals("USERNAME")) {
+                                    outputModel.setCC(nextEntity.getText());
+                                }
                             }
 
                         }
