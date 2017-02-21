@@ -165,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
     private void getModelIdFromServer(final String filePath) {
 
 
+        showProgressDialog();
+
         ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Model");
         parseQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -197,8 +199,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readFile(String filePath,String model) throws IOException {
-
-        showProgressDialog();
 
         FileReader fileReader = new FileReader(filePath);
         BufferedReader br = new BufferedReader(fileReader);
