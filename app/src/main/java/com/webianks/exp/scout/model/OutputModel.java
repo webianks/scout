@@ -6,16 +6,16 @@ package com.webianks.exp.scout.model;
 
 public class OutputModel {
 
-    private String from = "ANY";
-    private String to = "ANY";
-    private String toDate = "ANY";
-    private String fromDate = "ANY";
-    private String hasAttachments = "ANY";
-    private String attachmentType = "ANY";
-    private String attachmentSize = "ANY";
-    private String attachmentName = "ANY";
-    private String subject = "ANY";
-    private String cc = "ANY";
+    private String from = "Any";
+    private String to = "Any";
+    private String toDate = "Any";
+    private String fromDate = "Any";
+    private String hasAttachments = "Any";
+    private String attachmentType = "Any";
+    private String attachmentSize = "Any";
+    private String attachmentName = "Any";
+    private String subject = "Any";
+    private String cc = "Any";
 
     //setter methods
 
