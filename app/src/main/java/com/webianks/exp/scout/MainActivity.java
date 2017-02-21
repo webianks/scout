@@ -18,6 +18,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.webianks.exp.scout.model.NamedEntities;
+import com.webianks.exp.scout.model.OutputModel;
 import com.webianks.exp.scout.model.TypedRelations;
 import com.webianks.exp.scout.network.ApiServices;
 import com.webianks.exp.scout.network.RestClient;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        //testCalls();
+        testCalls(" ","");
 
     }
 
@@ -68,11 +69,29 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     NamedEntities namedEntities = response.body();
+                    OutputModel outputModel = new OutputModel();
 
                     if (namedEntities.getEntities() != null && namedEntities.getEntities().size() > 0) {
 
-                        for (NamedEntities.EntitiesBean entitiesBean : namedEntities.getEntities())
-                            Log.d(TAG, entitiesBean.getText());
+                        for (NamedEntities.EntitiesBean entitiesBean : namedEntities.getEntities()){
+
+
+                            if (entitiesBean.getType().equals("ATTACHMENT_TYPE"))
+                                outputModel.setAttachmentType(entitiesBean.getText());
+
+                        }
+
+                        Log.d(TAG, "FROM "+outputModel.getFrom());
+                        Log.d(TAG, "To "+outputModel.getTo());
+                        Log.d(TAG, "ToDate "+outputModel.getToDate());
+                        Log.d(TAG, "FromDate "+outputModel.getFrom());
+                        Log.d(TAG, "HasAttachments "+outputModel.hasAttachments());
+                        Log.d(TAG, "AttachmentType "+outputModel.getAttachmentType());
+                        Log.d(TAG, "AttachmentSize "+outputModel.getAttachmentSize());
+                        Log.d(TAG, "AttachmentName "+outputModel.getAttachmentName());
+                        Log.d(TAG, "Subject "+outputModel.getSubject());
+                        Log.d(TAG, "CC "+outputModel.getCC());
+
                     }
                     dismissDialogNow(++count);
                 }
@@ -192,8 +211,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
 
 
     }
