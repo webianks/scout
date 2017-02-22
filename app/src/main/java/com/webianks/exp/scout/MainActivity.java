@@ -316,8 +316,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void setAttachmentName(OutputModel outputModel, NamedEntities.EntitiesBean entitiesBean) {
 
-        if (entitiesBean.getType().equals("ATTACHMENT_NAME"))
+        if (entitiesBean.getType().equals("ATTACHMENT_NAME")){
             outputModel.setAttachmentName(entitiesBean.getText());
+            if (entitiesBean.getText().contains(".pdf"))
+                outputModel.setAttachmentType("pdf");
+            else if (entitiesBean.getText().contains(".ppt"))
+                outputModel.setAttachmentType("ppt");
+            else if (entitiesBean.getText().contains(".doc"))
+                outputModel.setAttachmentType("doc");
+        }
+
 
     }
 
@@ -346,7 +354,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     public void showFileChooser(View view) {
 
         new MaterialFilePicker()
@@ -357,7 +364,6 @@ public class MainActivity extends AppCompatActivity {
                 .withHiddenFiles(true)
                 .start();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
