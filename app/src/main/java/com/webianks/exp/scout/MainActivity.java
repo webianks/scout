@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        //testCalls("Harshit's last week mails regarding iPhone", "94055edd-51cb-49c1-b109-c08501a886f8");
+        //testCalls("", "");
 
     }
 
@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
                         stringBuilder.append("Subject " + outputModel.getSubject() + "\n");
                         stringBuilder.append("CC " + outputModel.getCC() + "\n\n");
 
-                        Log.d(TAG, stringBuilder.toString());
+                        ///Log.d(TAG, stringBuilder.toString());
 
-                        //fileSuccess = FileUtils.writeOutputFile(stringBuilder.toString());
+                        fileSuccess = FileUtils.writeOutputFile(stringBuilder.toString());
 
                     }
                     count++;
