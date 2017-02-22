@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        testCalls("Mails from Vineet to Uday and me", "");
+        testCalls("From.pdf Ishita sent yesterday with size 10 mega bytes", "");
 
     }
 
@@ -266,6 +266,13 @@ public class MainActivity extends AppCompatActivity {
                 if (nextEntity.getType().equals("USERNAME"))
                     outputModel.setFrom(nextEntity.getText());
 
+            }
+
+            if ((i-1)>=0){
+
+                NamedEntities.EntitiesBean previousEntity = namedEntities.getEntities().get(i-1);
+                if (previousEntity.getType().equals("USERNAME") && entitiesBean.getText().contains("sent"))
+                    outputModel.setFrom(previousEntity.getText());
             }
 
         }
