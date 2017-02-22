@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> allInputs;
     private int count = 0;
     private int numberOfLines;
+    private boolean fileSuccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,32 +105,34 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d(TAG, stringBuilder.toString());
 
-                }
+                        fileSuccess = FileUtils.writeOutputFile(stringBuilder.toString());
+
+                    }
                     count++;
-                    if (count<numberOfLines){
-                        testCalls(allInputs.get(count),model);
+                    if (count < numberOfLines) {
+                        testCalls(allInputs.get(count), model);
                         progressDialog.setProgress(count);
-                    }else
+                    } else
                         dismissDialogNow();
+
+                }
 
             }
 
-        }
+            @Override
+            public void onFailure(Call<NamedEntities> call, Throwable t) {
 
-        @Override
-        public void onFailure (Call < NamedEntities > call, Throwable t){
+                count++;
+                if (count < numberOfLines) {
+                    testCalls(allInputs.get(count), model);
+                    progressDialog.setProgress(count);
+                } else
+                    dismissDialogNow();
+            }
 
-            count++;
-            if (count<numberOfLines){
-                testCalls(allInputs.get(count),model);
-                progressDialog.setProgress(count);
-            }else
-                dismissDialogNow();
-        }
+        });
 
-    });
-
-}
+    }
 
     private void setSubject(OutputModel outputModel, int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
 
@@ -376,7 +379,9 @@ public class MainActivity extends AppCompatActivity {
 
         String singleLine;
         allInputs = new ArrayList<>();
-        count = 1;
+        count = 0;
+        fileSuccess = false;
+        numberOfLines = 0;
 
         try {
             while ((singleLine = br.readLine()) != null) {
@@ -388,15 +393,16 @@ public class MainActivity extends AppCompatActivity {
         } finally {
             br.close();
             progressDialog.setMax(numberOfLines);
-            startExtracting(allInputs,model);
+            FileUtils.createOutputFile();
+            startExtracting(allInputs, model);
         }
 
     }
 
-    private void startExtracting(ArrayList<String> allInputs,String model) {
+    private void startExtracting(ArrayList<String> allInputs, String model) {
 
-        if (allInputs!=null && allInputs.size()>0)
-            testCalls(allInputs.get(0),model);
+        if (allInputs != null && allInputs.size() > 0)
+            testCalls(allInputs.get(0), model);
 
     }
 
@@ -414,8 +420,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void dismissDialogNow() {
 
-        if (progressDialog != null )
+        if (progressDialog != null)
             progressDialog.dismiss();
+
+        if (fileSuccess)
+            Toast.makeText(this, getString(R.string.file_output), Toast.LENGTH_LONG).show();
 
     }
 

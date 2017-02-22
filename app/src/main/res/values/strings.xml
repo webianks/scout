@@ -8,5 +8,6 @@
     <string name="no_file">No file selected.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="please_wait">Please wait..</string>
+    <string name="please_wait">Extracting and saving output in file..</string>
+    <string name="file_output">Output saved in Appathon folder.</string>
 </resources>
