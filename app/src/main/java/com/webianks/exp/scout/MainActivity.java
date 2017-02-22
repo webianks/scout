@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        //testCalls("Today's mails with PPTs", "26553f5c-5787-4753-bc4c-3e5ddb82022a");
+        //testCalls("Harshit's last week mails regarding iPhone", "94055edd-51cb-49c1-b109-c08501a886f8");
 
     }
 
@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
                         stringBuilder.append("Subject " + outputModel.getSubject() + "\n");
                         stringBuilder.append("CC " + outputModel.getCC() + "\n\n");
 
-                        //Log.d(TAG, stringBuilder.toString());
+                        Log.d(TAG, stringBuilder.toString());
 
-                        fileSuccess = FileUtils.writeOutputFile(stringBuilder.toString());
+                        //fileSuccess = FileUtils.writeOutputFile(stringBuilder.toString());
 
                     }
                     count++;
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             if ((i + 1) < namedEntities.getEntities().size()) {
 
                 NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+
                 if (nextEntity.getType().equals("USERNAME"))
                     outputModel.setTo(nextEntity.getText());
 
@@ -164,8 +165,9 @@ public class MainActivity extends AppCompatActivity {
                         NamedEntities.EntitiesBean ccEntry = namedEntities.getEntities().get(i + 3);
                         NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
 
-                        if (!ccEntry.getType().equals("CC"))
+                        if (!ccEntry.getType().contains("CC") && !lastEntity.getType().contains("CC"))
                             outputModel.setTo(outputModel.getTo() + " and " + lastEntity.getText());
+
                     }else{
 
                         NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
@@ -190,12 +192,14 @@ public class MainActivity extends AppCompatActivity {
                 if (nextEntity.getType().equals("USERNAME"))
                     outputModel.setCC(nextEntity.getText());
             }
-
-            if (i-1 >= 0){
+            else if (i-1 >= 0){
 
                 NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i - 1);
                 if (nextEntity.getType().equals("USERNAME"))
                     outputModel.setCC(nextEntity.getText());
+
+                if (outputModel.getFrom().equals(nextEntity.getText()))
+                    outputModel.setFrom("Any");
             }
         }
     }
