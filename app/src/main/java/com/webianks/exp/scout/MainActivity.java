@@ -19,7 +19,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.webianks.exp.scout.model.NamedEntities;
 import com.webianks.exp.scout.model.OutputModel;
-import com.webianks.exp.scout.model.TypedRelations;
 import com.webianks.exp.scout.network.ApiServices;
 import com.webianks.exp.scout.network.RestClient;
 
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView selectedFile;
     private ProgressDialog progressDialog;
     private int count;
+    private OutputModel outputModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         //Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("Mail with subject", "json", model);
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("mail sent to me on date 3 Jan 2015", "json", model);
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -67,143 +67,26 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     NamedEntities namedEntities = response.body();
-                    OutputModel outputModel = new OutputModel();
+                    outputModel = new OutputModel();
 
                     if (namedEntities.getEntities() != null && namedEntities.getEntities().size() > 0) {
 
                         for (int i = 0; i < namedEntities.getEntities().size(); i++) {
 
                             NamedEntities.EntitiesBean entitiesBean = namedEntities.getEntities().get(i);
-                            //Log.d(TAG, "onResponse: "+entitiesBean.getType());
-
-                            if (entitiesBean.getType().equals("ATTACHMENT_TYPE")) {
-
-                                if (!entitiesBean.getText().equalsIgnoreCase("Attachments"))
-                                    outputModel.setAttachmentType(entitiesBean.getText());
-
-                                outputModel.setHasAttachments("YES");
-                            }
-
-                            if (entitiesBean.getType().equals("ATTACHMENT_SIZE")) {
-/*
-                                if (entitiesBean.getText().contains("larger") || entitiesBean.getText().contains("Larger"))
-                                    outputModel.setAttachmentSize(entitiesBean.getText().replace("larger than",">"));
-                                else if(entitiesBean.getText().contains("smaller") || entitiesBean.getText().contains("Smaller"))
-                                    outputModel.setAttachmentSize(entitiesBean.getText().replace("smaller than","<"));
-                                else*/
-                                outputModel.setAttachmentSize(entitiesBean.getText());
-
-                            }
-
-                            if (entitiesBean.getType().equals("ATTACHMENT_NAME"))
-                                outputModel.setAttachmentName(entitiesBean.getText());
-
-                            if (entitiesBean.getType().equals("FROM")) {
-
-                                if (i + 1 < namedEntities.getEntities().size()) {
-
-                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                    if (nextEntity.getType().equals("USERNAME"))
-                                        outputModel.setFrom(nextEntity.getText());
-
-                                }
-
-                            }
-
-                            if (entitiesBean.getType().equals("SPAN"))
-                                outputModel.setToDate("Today"); //here only for last
-
-
-                            if (entitiesBean.getType().equals("DATE")) {
-
-                                //logic for days
-                                if (entitiesBean.getText().contains("day") || entitiesBean.getText().contains("Day")) {
-
-                                    String[] splittedDay = entitiesBean.getText().split(" ");
-                                    int date = 1;
-
-                                    if (splittedDay.length > 1)
-                                        date = Integer.valueOf(splittedDay[0]);
-
-                                    outputModel.setFromDate(outputModel.getToDate() + "-" + date);
-
-                                }
-                                //logic for months
-                                else if (entitiesBean.getText().contains("month") || entitiesBean.getText().contains("Month")) {
-
-                                    String[] splittedMonth = entitiesBean.getText().split(" ");
-                                    int day = 1;
-                                    if (splittedMonth.length > 1)
-                                        day = Integer.valueOf(splittedMonth[0]);
-                                    day = day * 30;
-
-                                    outputModel.setFromDate(outputModel.getToDate() + "-" + day);
-
-
-                                }
-                                //logic for years
-                                else if (entitiesBean.getText().contains("year") || entitiesBean.getText().contains("Year")) {
-
-                                    String[] splittedMonth = entitiesBean.getText().split(" ");
-                                    int day = 1;
-                                    if (splittedMonth.length > 1)
-                                        day = Integer.valueOf(splittedMonth[0]);
-                                    day = day * 365;
-
-                                    outputModel.setFromDate(outputModel.getToDate() + "-" + day);
-
-                                }
-                                //logic for specific date
-                                else {
-                                    outputModel.setFromDate(entitiesBean.getText());
-                                    outputModel.setToDate(entitiesBean.getText());
-                                }
-
-
-                            }
-
-                            if (entitiesBean.getType().equals("CC")) {
-
-                                if (i + 1 < namedEntities.getEntities().size()) {
-
-                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                    if (nextEntity.getType().equals("USERNAME"))
-                                        outputModel.setCC(nextEntity.getText());
-                                }
-                            }
-
-
-                            if (entitiesBean.getType().equals("TO")) {
-
-                                if (i + 1 < namedEntities.getEntities().size()) {
-
-                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                    if (nextEntity.getType().equals("USERNAME"))
-                                        outputModel.setTo(nextEntity.getText());
-
-
-                                    if (i + 2 < namedEntities.getEntities().size()) {
-                                        NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
-                                        if (nextEntity.getType().equals("USERNAME"))
-                                            outputModel.setTo(outputModel.getTo() + " and " + lastEntity.getText());
-                                    }
-                                }
-
-                            }
-
-                            if (entitiesBean.getType().equals("SUBJECT")) {
-
-                                if (i + 1 < namedEntities.getEntities().size()) {
-
-                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                    if (nextEntity.getType().equals("SUBJECT_TITLE"))
-                                        outputModel.setSubject(nextEntity.getText());
-                                }
-
-                            }
+                            setAttachmentType(entitiesBean);
+                            setAttachmentSize(entitiesBean);
+                            setAttachmentName(entitiesBean);
+                            setFrom(i,entitiesBean,namedEntities);
+                            setToDate(entitiesBean);
+                            setFromDate(entitiesBean);
+                            setCC(i,entitiesBean,namedEntities);
+                            setTo(i,entitiesBean,namedEntities);
+                            setSubject(i,entitiesBean,namedEntities);
 
                         }
 
+                        Log.d(TAG,"mail sent to me on date 3 Jan 2015");
                         Log.d(TAG, "FROM " + outputModel.getFrom());
                         Log.d(TAG, "To " + outputModel.getTo());
                         Log.d(TAG, "ToDate " + outputModel.getToDate());
@@ -227,6 +110,159 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private void setSubject(int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
+
+        if (entitiesBean.getType().equals("SUBJECT")) {
+
+            if (i + 1 < namedEntities.getEntities().size()) {
+
+                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                if (nextEntity.getType().equals("SUBJECT_TITLE"))
+                    outputModel.setSubject(nextEntity.getText());
+            }
+
+        }
+    }
+
+    private void setTo(int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
+
+        if (entitiesBean.getType().equals("TO")) {
+
+            if (i + 1 < namedEntities.getEntities().size()) {
+
+                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                if (nextEntity.getType().equals("USERNAME"))
+                    outputModel.setTo(nextEntity.getText());
+
+
+                if (i + 2 < namedEntities.getEntities().size()) {
+                    NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
+                    if (nextEntity.getType().equals("USERNAME"))
+                        outputModel.setTo(outputModel.getTo() + " and " + lastEntity.getText());
+                }
+            }
+
+        }
+    }
+
+    private void setCC(int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
+
+        if (entitiesBean.getType().equals("CC")) {
+
+            if (i + 1 < namedEntities.getEntities().size()) {
+
+                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                if (nextEntity.getType().equals("USERNAME"))
+                    outputModel.setCC(nextEntity.getText());
+            }
+        }
+    }
+
+    private void setFromDate(NamedEntities.EntitiesBean entitiesBean) {
+
+        if (entitiesBean.getType().equals("DATE")) {
+
+            //logic for days
+            if (entitiesBean.getText().contains("day") || entitiesBean.getText().contains("Day")) {
+
+                String[] splittedDay = entitiesBean.getText().split(" ");
+                int date = 1;
+
+                if (splittedDay.length > 1)
+                    date = Integer.valueOf(splittedDay[0]);
+
+                outputModel.setFromDate(outputModel.getToDate() + "-" + date);
+
+            }
+            //logic for months
+            else if (entitiesBean.getText().contains("month") || entitiesBean.getText().contains("Month")) {
+
+                String[] splittedMonth = entitiesBean.getText().split(" ");
+                int day = 1;
+                if (splittedMonth.length > 1)
+                    day = Integer.valueOf(splittedMonth[0]);
+                day = day * 30;
+
+                outputModel.setFromDate(outputModel.getToDate() + "-" + day);
+
+
+            }
+            //logic for years
+            else if (entitiesBean.getText().contains("year") || entitiesBean.getText().contains("Year")) {
+
+                String[] splittedMonth = entitiesBean.getText().split(" ");
+                int day = 1;
+                if (splittedMonth.length > 1)
+                    day = Integer.valueOf(splittedMonth[0]);
+                day = day * 365;
+
+                outputModel.setFromDate(outputModel.getToDate() + "-" + day);
+
+            }
+            //logic for specific date
+            else {
+                outputModel.setFromDate(entitiesBean.getText());
+                outputModel.setToDate(entitiesBean.getText());
+            }
+
+        }
+    }
+
+    private void setToDate(NamedEntities.EntitiesBean entitiesBean) {
+
+        if (entitiesBean.getType().equals("SPAN"))
+            outputModel.setToDate("Today"); //here only for last
+    }
+
+    private void setFrom(int i, NamedEntities.EntitiesBean entitiesBean,NamedEntities namedEntities) {
+
+        if (entitiesBean.getType().equals("FROM")) {
+
+            if (i + 1 < namedEntities.getEntities().size()) {
+
+                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                if (nextEntity.getType().equals("USERNAME"))
+                    outputModel.setFrom(nextEntity.getText());
+
+            }
+
+        }
+    }
+
+    private void setAttachmentName(NamedEntities.EntitiesBean entitiesBean) {
+
+        if (entitiesBean.getType().equals("ATTACHMENT_NAME"))
+            outputModel.setAttachmentName(entitiesBean.getText());
+
+    }
+
+    private void setAttachmentSize(NamedEntities.EntitiesBean entitiesBean) {
+
+        if (entitiesBean.getType().equals("ATTACHMENT_SIZE")) {
+/*
+                                if (entitiesBean.getText().contains("larger") || entitiesBean.getText().contains("Larger"))
+                                    outputModel.setAttachmentSize(entitiesBean.getText().replace("larger than",">"));
+                                else if(entitiesBean.getText().contains("smaller") || entitiesBean.getText().contains("Smaller"))
+                                    outputModel.setAttachmentSize(entitiesBean.getText().replace("smaller than","<"));
+                                else*/
+            outputModel.setAttachmentSize(entitiesBean.getText());
+
+        }
+    }
+
+    private void setAttachmentType(NamedEntities.EntitiesBean entitiesBean) {
+
+        if (entitiesBean.getType().equals("ATTACHMENT_TYPE")) {
+
+            if (!entitiesBean.getText().equalsIgnoreCase("Attachments"))
+                outputModel.setAttachmentType(entitiesBean.getText());
+
+            outputModel.setHasAttachments("YES");
+        }
+    }
+
+
 
     public void showFileChooser(View view) {
 
