@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity {
         //Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
-
         Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("Mail with subject What is this", "json", model);
-        Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations("PDFs from Ravi in the last 3 days", "json", model);
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -219,32 +217,6 @@ public class MainActivity extends AppCompatActivity {
                 dismissDialogNow(++count);
             }
         });
-
-/*
-        typedRelationsCall.enqueue(new Callback<TypedRelations>() {
-            @Override
-            public void onResponse(Call<TypedRelations> call, Response<TypedRelations> response) {
-
-                if (response.isSuccessful()) {
-
-                    TypedRelations typedRelations = response.body();
-
-                    if (typedRelations.getTypedRelations() != null && typedRelations.getTypedRelations().size() > 0) {
-
-                        //Toast.makeText(MainActivity.this, "Got the relations", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, typedRelations.getTypedRelations().get(0).getType());
-
-                    }
-                    dismissDialogNow(++count);
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TypedRelations> call, Throwable t) {
-                dismissDialogNow(++count);
-            }
-        });*/
 
     }
 
