@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = MainActivity.class.getSimpleName();
     private TextView selectedFile;
     private ProgressDialog progressDialog;
+    private ArrayList<String> allInputs;
+    private int count = 1;
+    private int numberOfLines;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +49,18 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        testCalls("mail sent to me", "",1);
+        //testCalls("mail sent to me", "");
 
     }
 
 
-    private void testCalls(final String input, String model,int count) {
+    private void testCalls(final String input, final String model) {
 
         //Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
         Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities(input, "json", model);
+
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -102,15 +106,22 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 //dismissDialogNow(++count);
+                    count++;
+                    if (count<=numberOfLines)
+                        testCalls(allInputs.get(count),model);
             }
+
         }
 
         @Override
         public void onFailure (Call < NamedEntities > call, Throwable t){
 
             //dismissDialogNow(++count);
-
+            count++;
+            if (count<=numberOfLines)
+                testCalls(allInputs.get(count),model);
         }
+
     });
 
 }
@@ -359,8 +370,8 @@ public class MainActivity extends AppCompatActivity {
         BufferedReader br = new BufferedReader(fileReader);
 
         String singleLine;
-        ArrayList<String> allInputs = new ArrayList<>();
-        int numberOfLines = 0;
+        allInputs = new ArrayList<>();
+        count = 1;
 
         try {
             while ((singleLine = br.readLine()) != null) {
@@ -371,15 +382,15 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } finally {
             br.close();
-            startExtracting(allInputs,model,numberOfLines);
+            startExtracting(allInputs,model);
         }
 
     }
 
-    private void startExtracting(ArrayList<String> allInputs,String model, int numberOfLines) {
+    private void startExtracting(ArrayList<String> allInputs,String model) {
 
         if (allInputs!=null && allInputs.size()>0)
-            testCalls(allInputs.get(0),model,1);
+            testCalls(allInputs.get(0),model);
 
     }
 
