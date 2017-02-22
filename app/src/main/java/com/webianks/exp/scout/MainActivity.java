@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView selectedFile;
     private ProgressDialog progressDialog;
     private ArrayList<String> allInputs;
-    private int count = 1;
+    private int count = 0;
     private int numberOfLines;
 
     @Override
@@ -105,10 +105,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, stringBuilder.toString());
 
                 }
-                //dismissDialogNow(++count);
                     count++;
-                    if (count<=numberOfLines)
+                    if (count<numberOfLines){
                         testCalls(allInputs.get(count),model);
+                        progressDialog.setProgress(count);
+                    }else
+                        dismissDialogNow();
+
             }
 
         }
@@ -116,10 +119,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onFailure (Call < NamedEntities > call, Throwable t){
 
-            //dismissDialogNow(++count);
             count++;
-            if (count<=numberOfLines)
+            if (count<numberOfLines){
                 testCalls(allInputs.get(count),model);
+                progressDialog.setProgress(count);
+            }else
+                dismissDialogNow();
         }
 
     });
@@ -382,6 +387,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } finally {
             br.close();
+            progressDialog.setMax(numberOfLines);
             startExtracting(allInputs,model);
         }
 
@@ -399,17 +405,16 @@ public class MainActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.please_wait));
-        progressDialog.setIndeterminate(true);
-        //progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMax(numberOfLines);
         progressDialog.setCancelable(false);
         progressDialog.show();
 
     }
 
-    private void dismissDialogNow(int count) {
+    private void dismissDialogNow() {
 
-
-        if (progressDialog != null && count == 2)
+        if (progressDialog != null )
             progressDialog.dismiss();
 
     }
