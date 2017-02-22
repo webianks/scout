@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         ApiServices apiService = new RestClient().getApiService();
 
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("ppts/presentations from ravi to me and rohan", "json", model);
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("Mail with subject What is this", "json", model);
         Call<TypedRelations> typedRelationsCall = apiService.getTypedRelations("PDFs from Ravi in the last 3 days", "json", model);
 
         //asynchronous call
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (entitiesBean.getType().equals("FROM")) {
 
+
                                 NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
                                 if (nextEntity.getType().equals("USERNAME")) {
                                     outputModel.setFrom(nextEntity.getText());
@@ -113,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             if (entitiesBean.getType().equals("DATE")) {
-
 
                                 //logic for days
                                 if (entitiesBean.getText().contains("day") || entitiesBean.getText().contains("Day")) {
@@ -188,7 +188,15 @@ public class MainActivity extends AppCompatActivity {
 
                             }
 
-                        }
+                            if (entitiesBean.getType().equals("SUBJECT")) {
+
+                                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                                if (nextEntity.getType().equals("SUBJECT_TITLE")) {
+                                    outputModel.setSubject(nextEntity.getText());
+                                }
+                            }
+
+                            }
 
                         Log.d(TAG, "FROM " + outputModel.getFrom());
                         Log.d(TAG, "To " + outputModel.getTo());
