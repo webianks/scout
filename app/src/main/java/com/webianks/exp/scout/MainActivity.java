@@ -25,6 +25,7 @@ import com.webianks.exp.scout.network.RestClient;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -37,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = MainActivity.class.getSimpleName();
     private TextView selectedFile;
     private ProgressDialog progressDialog;
-    private int count;
-    private OutputModel outputModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +46,17 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        testCalls(" ", "");
+        testCalls("mail sent to me", "",1);
 
     }
 
 
-    private void testCalls(String input, String model) {
+    private void testCalls(final String input, String model,int count) {
 
         //Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("mail sent to me on date 3 Jan 2015", "json", model);
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities(input, "json", model);
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -67,51 +66,56 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     NamedEntities namedEntities = response.body();
-                    outputModel = new OutputModel();
+                    OutputModel outputModel = new OutputModel();
 
                     if (namedEntities.getEntities() != null && namedEntities.getEntities().size() > 0) {
 
                         for (int i = 0; i < namedEntities.getEntities().size(); i++) {
 
                             NamedEntities.EntitiesBean entitiesBean = namedEntities.getEntities().get(i);
-                            setAttachmentType(entitiesBean);
-                            setAttachmentSize(entitiesBean);
-                            setAttachmentName(entitiesBean);
-                            setFrom(i,entitiesBean,namedEntities);
-                            setToDate(entitiesBean);
-                            setFromDate(entitiesBean);
-                            setCC(i,entitiesBean,namedEntities);
-                            setTo(i,entitiesBean,namedEntities);
-                            setSubject(i,entitiesBean,namedEntities);
+                            setAttachmentType(outputModel, entitiesBean);
+                            setAttachmentSize(outputModel, entitiesBean);
+                            setAttachmentName(outputModel, entitiesBean);
+                            setFrom(outputModel, i, entitiesBean, namedEntities);
+                            setToDate(outputModel, entitiesBean);
+                            setFromDate(outputModel, entitiesBean);
+                            setCC(outputModel, i, entitiesBean, namedEntities);
+                            setTo(outputModel, i, entitiesBean, namedEntities);
+                            setSubject(outputModel, i, entitiesBean, namedEntities);
 
                         }
 
-                        Log.d(TAG,"mail sent to me on date 3 Jan 2015");
-                        Log.d(TAG, "FROM " + outputModel.getFrom());
-                        Log.d(TAG, "To " + outputModel.getTo());
-                        Log.d(TAG, "ToDate " + outputModel.getToDate());
-                        Log.d(TAG, "FromDate " + outputModel.getFromDate());
-                        Log.d(TAG, "HasAttachments " + outputModel.hasAttachments());
-                        Log.d(TAG, "AttachmentType " + outputModel.getAttachmentType());
-                        Log.d(TAG, "AttachmentSize " + outputModel.getAttachmentSize());
-                        Log.d(TAG, "AttachmentName " + outputModel.getAttachmentName());
-                        Log.d(TAG, "Subject " + outputModel.getSubject());
-                        Log.d(TAG, "CC " + outputModel.getCC());
+                        StringBuilder stringBuilder = new StringBuilder();
+                        stringBuilder.append(input + "\n");
+                        stringBuilder.append("From " + outputModel.getFrom() + "\n");
+                        stringBuilder.append("To " + outputModel.getTo() + "\n");
+                        stringBuilder.append("ToDate " + outputModel.getToDate() + "\n");
+                        stringBuilder.append("FromDate " + outputModel.getFromDate() + "\n");
+                        stringBuilder.append("HasAttachments " + outputModel.hasAttachments() + "\n");
+                        stringBuilder.append("AttachmentType " + outputModel.getAttachmentType() + "\n");
+                        stringBuilder.append("AttachmentSize " + outputModel.getAttachmentSize() + "\n");
+                        stringBuilder.append("AttachmentName " + outputModel.getAttachmentName() + "\n");
+                        stringBuilder.append("Subject " + outputModel.getSubject() + "\n");
+                        stringBuilder.append("CC " + outputModel.getCC() + "\n\n");
 
-                    }
-                    dismissDialogNow(++count);
+                        Log.d(TAG, stringBuilder.toString());
+
                 }
+                //dismissDialogNow(++count);
             }
+        }
 
-            @Override
-            public void onFailure(Call<NamedEntities> call, Throwable t) {
-                dismissDialogNow(++count);
-            }
-        });
+        @Override
+        public void onFailure (Call < NamedEntities > call, Throwable t){
 
-    }
+            //dismissDialogNow(++count);
 
-    private void setSubject(int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
+        }
+    });
+
+}
+
+    private void setSubject(OutputModel outputModel, int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
 
         if (entitiesBean.getType().equals("SUBJECT")) {
 
@@ -125,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setTo(int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
+    private void setTo(OutputModel outputModel, int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
 
         if (entitiesBean.getType().equals("TO")) {
 
@@ -146,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setCC(int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
+    private void setCC(OutputModel outputModel, int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
 
         if (entitiesBean.getType().equals("CC")) {
 
@@ -159,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setFromDate(NamedEntities.EntitiesBean entitiesBean) {
+    private void setFromDate(OutputModel outputModel, NamedEntities.EntitiesBean entitiesBean) {
 
         if (entitiesBean.getType().equals("DATE")) {
 
@@ -209,13 +213,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setToDate(NamedEntities.EntitiesBean entitiesBean) {
+    private void setToDate(OutputModel outputModel, NamedEntities.EntitiesBean entitiesBean) {
 
         if (entitiesBean.getType().equals("SPAN"))
             outputModel.setToDate("Today"); //here only for last
     }
 
-    private void setFrom(int i, NamedEntities.EntitiesBean entitiesBean,NamedEntities namedEntities) {
+    private void setFrom(OutputModel outputModel, int i, NamedEntities.EntitiesBean entitiesBean, NamedEntities namedEntities) {
 
         if (entitiesBean.getType().equals("FROM")) {
 
@@ -230,14 +234,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setAttachmentName(NamedEntities.EntitiesBean entitiesBean) {
+    private void setAttachmentName(OutputModel outputModel, NamedEntities.EntitiesBean entitiesBean) {
 
         if (entitiesBean.getType().equals("ATTACHMENT_NAME"))
             outputModel.setAttachmentName(entitiesBean.getText());
 
     }
 
-    private void setAttachmentSize(NamedEntities.EntitiesBean entitiesBean) {
+    private void setAttachmentSize(OutputModel outputModel, NamedEntities.EntitiesBean entitiesBean) {
 
         if (entitiesBean.getType().equals("ATTACHMENT_SIZE")) {
 /*
@@ -251,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setAttachmentType(NamedEntities.EntitiesBean entitiesBean) {
+    private void setAttachmentType(OutputModel outputModel, NamedEntities.EntitiesBean entitiesBean) {
 
         if (entitiesBean.getType().equals("ATTACHMENT_TYPE")) {
 
@@ -261,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
             outputModel.setHasAttachments("YES");
         }
     }
-
 
 
     public void showFileChooser(View view) {
@@ -356,23 +359,27 @@ public class MainActivity extends AppCompatActivity {
         BufferedReader br = new BufferedReader(fileReader);
 
         String singleLine;
+        ArrayList<String> allInputs = new ArrayList<>();
         int numberOfLines = 0;
 
-        if (br.readLine() != null)
-            testCalls(br.readLine(), model);
-
-       /* try {
+        try {
             while ((singleLine = br.readLine()) != null) {
-
                 numberOfLines++;
-                //Log.d(TAG,singleLine);
-
+                allInputs.add(singleLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             br.close();
-        }*/
+            startExtracting(allInputs,model,numberOfLines);
+        }
+
+    }
+
+    private void startExtracting(ArrayList<String> allInputs,String model, int numberOfLines) {
+
+        if (allInputs!=null && allInputs.size()>0)
+            testCalls(allInputs.get(0),model,1);
 
     }
 
