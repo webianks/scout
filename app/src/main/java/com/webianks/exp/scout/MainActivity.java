@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        testCalls("From.pdf Ishita sent yesterday with size 10 mega bytes", "");
+        testCalls("Today's mails with PPTs", "");
 
     }
 
@@ -216,6 +216,19 @@ public class MainActivity extends AppCompatActivity {
                 outputModel.setFromDate(outputModel.getToDate() + "-" + date);
 
             }
+            //logic for weeks
+            else if (entitiesBean.getText().contains("week") || entitiesBean.getText().contains("Week")) {
+
+                String[] splittedWeek = entitiesBean.getText().split(" ");
+                int day = 1;
+                if (splittedWeek.length > 1)
+                    day = Integer.valueOf(splittedWeek[0]);
+                day = day * 7;
+
+                outputModel.setFromDate(outputModel.getToDate() + "-" + day);
+
+            }
+
             //logic for months
             else if (entitiesBean.getText().contains("month") || entitiesBean.getText().contains("Month")) {
 
@@ -245,6 +258,21 @@ public class MainActivity extends AppCompatActivity {
             else {
                 outputModel.setFromDate(entitiesBean.getText());
                 outputModel.setToDate(entitiesBean.getText());
+            }
+
+
+            if (entitiesBean.getText().contains("Today") || entitiesBean.getText().contains("today")){
+
+                outputModel.setFromDate("Today");
+                outputModel.setToDate("Today");
+
+            }
+
+            if (entitiesBean.getText().contains("Yesterday") || entitiesBean.getText().contains("yesterday")){
+
+                outputModel.setFromDate("Today-1");
+                outputModel.setToDate("Today");
+
             }
 
         }
