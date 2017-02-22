@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         //Log.d(TAG,"QUERY: "+input);
 
         ApiServices apiService = new RestClient().getApiService();
-        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("Mail with subject What is this", "json", model);
+        Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities("Mail with subject", "json", model);
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -100,16 +100,19 @@ public class MainActivity extends AppCompatActivity {
 
                             if (entitiesBean.getType().equals("FROM")) {
 
+                                if (i + 1 < namedEntities.getEntities().size()) {
 
-                                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                if (nextEntity.getType().equals("USERNAME")) {
-                                    outputModel.setFrom(nextEntity.getText());
+                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                                    if (nextEntity.getType().equals("USERNAME"))
+                                        outputModel.setFrom(nextEntity.getText());
+
                                 }
+
                             }
 
-                            if (entitiesBean.getType().equals("SPAN")) {
+                            if (entitiesBean.getType().equals("SPAN"))
                                 outputModel.setToDate("Today"); //here only for last
-                            }
+
 
                             if (entitiesBean.getType().equals("DATE")) {
 
@@ -161,40 +164,45 @@ public class MainActivity extends AppCompatActivity {
 
                             if (entitiesBean.getType().equals("CC")) {
 
-                                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                if (nextEntity.getType().equals("USERNAME")) {
-                                    outputModel.setCC(nextEntity.getText());
+                                if (i + 1 < namedEntities.getEntities().size()) {
+
+                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                                    if (nextEntity.getType().equals("USERNAME"))
+                                        outputModel.setCC(nextEntity.getText());
                                 }
                             }
 
 
                             if (entitiesBean.getType().equals("TO")) {
 
-                                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                if (nextEntity.getType().equals("USERNAME")) {
-                                    outputModel.setTo(nextEntity.getText());
-                                }
+                                if (i + 1 < namedEntities.getEntities().size()) {
 
-                                if(i+2<namedEntities.getEntities().size()){
+                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                                    if (nextEntity.getType().equals("USERNAME"))
+                                        outputModel.setTo(nextEntity.getText());
 
-                                    NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
-                                    if (nextEntity.getType().equals("USERNAME")) {
-                                        outputModel.setTo(outputModel.getTo()+" and "+lastEntity.getText());
+
+                                    if (i + 2 < namedEntities.getEntities().size()) {
+                                        NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
+                                        if (nextEntity.getType().equals("USERNAME"))
+                                            outputModel.setTo(outputModel.getTo() + " and " + lastEntity.getText());
                                     }
-
                                 }
 
                             }
 
                             if (entitiesBean.getType().equals("SUBJECT")) {
 
-                                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
-                                if (nextEntity.getType().equals("SUBJECT_TITLE")) {
-                                    outputModel.setSubject(nextEntity.getText());
+                                if (i + 1 < namedEntities.getEntities().size()) {
+
+                                    NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                                    if (nextEntity.getType().equals("SUBJECT_TITLE"))
+                                        outputModel.setSubject(nextEntity.getText());
                                 }
-                            }
 
                             }
+
+                        }
 
                         Log.d(TAG, "FROM " + outputModel.getFrom());
                         Log.d(TAG, "To " + outputModel.getTo());
