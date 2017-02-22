@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFile = (TextView) findViewById(R.id.selectedFile);
 
-        //testCalls("mail sent to me", "");
+        testCalls("Mails from Vineet to Uday and me", "");
 
     }
 
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
         ApiServices apiService = new RestClient().getApiService();
         Call<NamedEntities> namedEntitiesCall = apiService.getNamedEntities(input, "json", model);
-
 
         //asynchronous call
         namedEntitiesCall.enqueue(new Callback<NamedEntities>() {
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d(TAG, stringBuilder.toString());
 
-                        fileSuccess = FileUtils.writeOutputFile(stringBuilder.toString());
+                        //fileSuccess = FileUtils.writeOutputFile(stringBuilder.toString());
 
                     }
                     count++;
@@ -116,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                         dismissDialogNow();
 
                 }
-
             }
 
             @Override
@@ -152,18 +150,31 @@ public class MainActivity extends AppCompatActivity {
 
         if (entitiesBean.getType().equals("TO")) {
 
-            if (i + 1 < namedEntities.getEntities().size()) {
+            if ((i + 1) < namedEntities.getEntities().size()) {
 
                 NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
                 if (nextEntity.getType().equals("USERNAME"))
                     outputModel.setTo(nextEntity.getText());
 
 
-                if (i + 2 < namedEntities.getEntities().size()) {
-                    NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
-                    if (nextEntity.getType().equals("USERNAME"))
-                        outputModel.setTo(outputModel.getTo() + " and " + lastEntity.getText());
+                if ((i + 2) < namedEntities.getEntities().size()) {
+
+                    if ((i + 3) < namedEntities.getEntities().size()){
+
+                        NamedEntities.EntitiesBean ccEntry = namedEntities.getEntities().get(i + 3);
+                        NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
+
+                        if (!ccEntry.getType().equals("CC"))
+                            outputModel.setTo(outputModel.getTo() + " and " + lastEntity.getText());
+                    }else{
+
+                        NamedEntities.EntitiesBean lastEntity = namedEntities.getEntities().get(i + 2);
+                        if (lastEntity.getType().equals("USERNAME"))
+                            outputModel.setTo(outputModel.getTo() + " and " + lastEntity.getText());
+                    }
+
                 }
+
             }
 
         }
@@ -176,6 +187,13 @@ public class MainActivity extends AppCompatActivity {
             if (i + 1 < namedEntities.getEntities().size()) {
 
                 NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i + 1);
+                if (nextEntity.getType().equals("USERNAME"))
+                    outputModel.setCC(nextEntity.getText());
+            }
+
+            if (i-1 >= 0){
+
+                NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i - 1);
                 if (nextEntity.getType().equals("USERNAME"))
                     outputModel.setCC(nextEntity.getText());
             }
@@ -251,6 +269,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+
+        if (i == 0){
+
+            NamedEntities.EntitiesBean nextEntity = namedEntities.getEntities().get(i);
+            if (nextEntity.getType().equals("USERNAME"))
+                outputModel.setFrom(nextEntity.getText());
+        }
+
     }
 
     private void setAttachmentName(OutputModel outputModel, NamedEntities.EntitiesBean entitiesBean) {
