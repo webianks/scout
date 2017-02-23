@@ -4,8 +4,8 @@ Scout helps to perform email search flawlessly on the basis of extracting variou
 <img src="https://github.com/webianks/scout/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" height="128" width="128" >
 
 #Screens
-<img src="" align="right" height="700" width="400" >
-<img src=""  height="700" width="400" >
+<img src="https://github.com/webianks/scout/blob/master/screens/screen_one.png" align="right" height="700" width="400" >
+<img src="https://github.com/webianks/scout/blob/master/screens/screen_two.png"  height="700" width="400" >
 
 #APIs
 IBM Alchemy Service 
