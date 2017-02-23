@@ -15,8 +15,7 @@ IBM Alchemy Service
 
 MIT License
 
-Copyright (c) 2017 Ramankit Singh
-              2017 Sajal Gupta
+Copyright (c) 2017 Ramankit Singh : Copyright (c) 2017 Sajal Gupta
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
