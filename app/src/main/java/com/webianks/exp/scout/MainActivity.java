@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -214,8 +213,11 @@ public class MainActivity extends AppCompatActivity {
                 String[] splittedDay = entitiesBean.getText().split(" ");
                 int date = 1;
 
-                if (splittedDay.length > 1)
-                    date = Integer.valueOf(splittedDay[0]);
+                if (splittedDay.length > 1){
+                    try {
+                        date = Integer.valueOf(splittedDay[0]);
+                    }catch (Exception e){}
+                }
 
                 outputModel.setFromDate(outputModel.getToDate() + "-" + date);
 
