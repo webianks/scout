@@ -1,7 +1,7 @@
 # Scout
 Scout helps to perform email search flawlessly on the basis of extracting various email search parameters from plain english query.
 
-<img src="" height="128" width="128" >
+<img src="https://github.com/webianks/scout/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" height="128" width="128" >
 
 #Screens
 <img src="" align="right" height="700" width="400" >
