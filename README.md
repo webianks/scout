@@ -9,13 +9,14 @@ date, from, to etc.
 Task is to translate a plain English based search text to the provided input set of
 parameters.
 
-Example:
+**Example**
+<ul>
+<li>mails from ravi in the last 3 days —&gt; From:- Ravi, ToDate:- Today, FromDate:- Today-3days</li>
+<li>ppts/presentations from ravi to me and rohan -- &gt; From:- Ravi To:-(Me and Rohan), AttachmentType:- ppt</li>
+<li>all attachments larger than 3MB —&gt; AttachmentSize &gt; 3MB</li>
+<li>Citrix XenMobile document -&gt; AttachmentType:- ppt/doc/xls/txt/pdf, AttachmentName :-Citrix/XenMobile/Citrix XenMobile </li>
+</ul>
 
-o mails from ravi in the last 3 days —&gt; From:- Ravi  ToDate:- Today FromDate:- Today-3days
-o ppts/presentations from ravi to me and rohan -- &gt; From:- Ravi To:-(Me and Rohan) AttachmentType:- ppt
-o all attachments larger than 3MB —&gt; AttachmentSize &gt; 3MB
-o Citrix XenMobile document -&gt; AttachmentType:- ppt/doc/xls/txt/pdf   
-AttachmentName :-Citrix/XenMobile/Citrix XenMobile
 
 ##License
 
