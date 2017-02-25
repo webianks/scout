@@ -36,7 +36,7 @@ All the search sentences should be broken down to the following parameters.
 
 #Solution
 
-As we studied the problem statement, we came to find out that this can be achievable from <b>Natural Language Processing.</b> We looked through all the options for NLP and decided to go with <b>IBM Watson Knowledge Studio</b> and <b>IBM Alchemy Language API.</b>
+As we studied the problem statement, we came to find out that this can be achieved by <b>Natural Language Processing.</b> We looked through all the options for NLP and decided to go with <b>IBM Watson Knowledge Studio</b> and <b>IBM Alchemy Language API.</b>
 For a particular language, we deal with finding the different <b>entities</b> in it, which is obtained by <b>training the model</b> accordingly in Watson Knowledge Studio. The model is trained by the different <b>annotations</b> provided by us to <b>recognize different entities</b> such as <b>Username</b>, <b>Time</b>, <b>Attachment</b>, <b>From</b>, <b>Subject</b> etc. We provide a generalized <b>training set</b> to the <b>model</b> to learn it, then <b>deploy the model to alchemy API service.</b>
 From our <b>Android App</b>, we <b>input the file</b> and make call for each line to the alchemy service which has already be trained, this returns us with a <b>JSON response</b> containing the entities and the order which they we’re detected.
 Now we <b>process</b> through those <b>obtained entities</b> in the App, for a <b>pattern</b> and <b>draw deductions</b> for the required parameters and write the <b>output in the file.</b>
