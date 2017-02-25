@@ -3,9 +3,19 @@ Scout helps to perform email search flawlessly on the basis of extracting variou
 
 <img src="https://github.com/webianks/scout/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" height="128" width="128" >
 
-#APIs
-IBM Alchemy Service 
+# Problem
+Email search on the mail server is based on explicitly providing input parameters like subject,
+date, from, to etc.
+Task is to translate a plain English based search text to the provided input set of
+parameters.
 
+Example:
+
+o mails from ravi in the last 3 days —&gt; From:- Ravi  ToDate:- Today FromDate:- Today-3days
+o ppts/presentations from ravi to me and rohan -- &gt; From:- Ravi To:-(Me and Rohan) AttachmentType:- ppt
+o all attachments larger than 3MB —&gt; AttachmentSize &gt; 3MB
+o Citrix XenMobile document -&gt; AttachmentType:- ppt/doc/xls/txt/pdf   
+AttachmentName :-Citrix/XenMobile/Citrix XenMobile
 
 ##License
 
