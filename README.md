@@ -42,6 +42,40 @@ From our <b>Android App</b>, we <b>input the file</b> and make call for each lin
 Now we <b>process</b> through those <b>obtained entities</b> in the App, for a <b>pattern</b> and <b>draw deductions</b> for the required parameters and write the <b>output in the file.</b>
 
 
+**An Example of entity recognition and processing**
+	PDFs from Ravi in the last 3 days
+  
+Entities are follows (JSON Response):
+```json
+"entities":[ 		
+{
+"count": "1",
+"text": "PDF",
+"type": "ATTACHMENT_TYPE"
+},			
+{
+"count": "1",
+"text": "from",
+"type": "FROM"
+},			{
+"count": "1",
+"text": "Ravi",
+"type": "USERNAME"
+},		
+{
+"count": "1",
+"text": "last",
+"type": "SPAN"
+},		
+{
+"count": "1",
+"text": "3 days",
+"type": "DATE"  
+} ]
+```
+
+
+
 
 ##License
 ```
