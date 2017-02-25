@@ -18,6 +18,23 @@ parameters.
 </ul>
 
 
+# Search sentences break-down
+All the search sentences should be broken down to the following parameters.
+
+<ol>
+<li>From</li>
+<li>To</li>
+<li>ToDate</li>
+<li>FromDate</li>
+<li>HasAttachments</li>
+<li>AttachmentType</li>
+<li>AttachmentSize</li>
+<li>AttachmentName</li>
+<li>Subject</li>
+<li>CC</li>
+</ol>
+
+
 ##License
 
 MIT License
